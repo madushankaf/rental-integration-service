@@ -1,0 +1,1 @@
+<messageStore xmlns="http://ws.apache.org/ns/synapse" name="SampleMessageStore" class="org.apache.synapse.message.store.impl.memory.InMemoryStore"/>

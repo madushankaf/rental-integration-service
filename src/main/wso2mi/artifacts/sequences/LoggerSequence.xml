@@ -1,0 +1,46 @@
+<sequence xmlns="http://ws.apache.org/ns/synapse" name="LoggerSequence">
+    <log level="custom">
+        <property name="Original Message" expression="json-eval($)"/>
+    </log>
+    <clone continueParent="true" sequential="true">
+        <target>
+            <sequence>
+                <call>
+                    <endpoint key="JobsAPIEndpoint"/>
+                </call>
+            </sequence>
+        </target>
+        <target>
+            <sequence>
+                <log level="custom">
+                    <property name="Cloned Message" expression="json-eval($)"/>
+                </log>
+                <payloadFactory media-type="xml">
+                    <format>
+                        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rent="http://example.com/rental">
+                            <soapenv:Header/>
+                            <soapenv:Body>
+                                <rent:RentalRequest>
+                                    <rent:consumer_id>12345</rent:consumer_id>
+                                    <rent:property_id>67890</rent:property_id>
+                                    <rent:rental_start_date>2025-03-01</rent:rental_start_date>
+                                    <rent:rental_duration_days>30</rent:rental_duration_days>
+                                    <rent:payment>
+                                        <rent:method>credit_card</rent:method>
+                                    </rent:payment>
+                                </rent:RentalRequest>
+                            </soapenv:Body>
+                        </soapenv:Envelope>
+                    </format>
+                    <args/>
+                </payloadFactory>
+                <log level="custom">
+                    <property name="SOAP Message" expression="get-property('default', 'messageType')"/>
+                </log>
+                <call>
+                    <endpoint key="DocumentsAPIEndpoint"/>
+                </call>
+            </sequence>
+        </target>
+    </clone>
+</sequence>

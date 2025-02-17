@@ -1,0 +1,5 @@
+<messageProcessor xmlns="http://ws.apache.org/ns/synapse" name="SampleMessageProcessor" class="org.apache.synapse.message.processor.impl.sampler.SamplingProcessor" messageStore="SampleMessageStore">
+    <parameter name="interval">1000</parameter> <!-- Check every 1000ms -->
+    <parameter name="sequence">LoggerSequence</parameter> <!-- Sequence to process the message -->
+    <parameter name="concurrency">1</parameter>
+</messageProcessor>
