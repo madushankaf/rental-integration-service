@@ -15,24 +15,35 @@
                 <log level="custom">
                     <property name="Cloned Message" expression="json-eval($)"/>
                 </log>
+                <property name="consumer_id" expression="json-eval($.consumer_id)" scope="default" type="STRING"/>
+                <property name="property_id" expression="json-eval($.property_id)" scope="default" type="STRING"/>
+                <property name="rental_start_date" expression="json-eval($.rental_start_date)" scope="default" type="STRING"/>
+                <property name="rental_duration_days" expression="json-eval($.rental_duration_days)" scope="default" type="STRING"/>
+                <property name="payment_method" expression="json-eval($.payment.method)" scope="default" type="STRING"/>
                 <payloadFactory media-type="xml">
                     <format>
                         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rent="http://example.com/rental">
                             <soapenv:Header/>
                             <soapenv:Body>
                                 <rent:RentalRequest>
-                                    <rent:consumer_id>12345</rent:consumer_id>
-                                    <rent:property_id>67890</rent:property_id>
-                                    <rent:rental_start_date>2025-03-01</rent:rental_start_date>
-                                    <rent:rental_duration_days>30</rent:rental_duration_days>
+                                    <rent:consumer_id>$1</rent:consumer_id>
+                                    <rent:property_id>$2</rent:property_id>
+                                    <rent:rental_start_date>$3</rent:rental_start_date>
+                                    <rent:rental_duration_days>$4</rent:rental_duration_days>
                                     <rent:payment>
-                                        <rent:method>credit_card</rent:method>
+                                        <rent:method>$5</rent:method>
                                     </rent:payment>
                                 </rent:RentalRequest>
                             </soapenv:Body>
                         </soapenv:Envelope>
                     </format>
-                    <args/>
+                    <args>
+                        <arg evaluator="xml" expression="get-property('consumer_id')"/>
+                        <arg evaluator="xml" expression="get-property('property_id')"/>
+                        <arg evaluator="xml" expression="get-property('rental_start_date')"/>
+                        <arg evaluator="xml" expression="get-property('rental_duration_days')"/>
+                        <arg evaluator="xml" expression="get-property('payment_method')"/>
+                    </args>
                 </payloadFactory>
                 <log level="custom">
                     <property name="SOAP Message" expression="get-property('default', 'messageType')"/>
